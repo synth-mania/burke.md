@@ -1,0 +1,14 @@
+{
+  "name": "burke.md",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "A site that is literally markdown: content is .md, compiled to HTML with the syntax left visible.",
+  "scripts": {
+    "build": "node build.mjs",
+    "watch": "node build.mjs --watch"
+  },
+  "dependencies": {
+    "marked": "^18.0.11"
+  }
+}

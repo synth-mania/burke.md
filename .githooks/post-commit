@@ -1,0 +1,10 @@
+#!/bin/sh
+# burke.md: rebuild dist/ after every commit.
+# Failures never block the commit.
+ROOT="$(git rev-parse --show-toplevel 2>/dev/null)" || exit 0
+[ -f "$ROOT/build.mjs" ] || exit 0
+if [ ! -d "$ROOT/node_modules" ]; then
+  echo "burke.md: node_modules missing — run: npm install" >&2
+  exit 0
+fi
+( cd "$ROOT" && node build.mjs >/dev/null 2>&1 ) || echo "burke.md: build failed — run: npm run build" >&2
