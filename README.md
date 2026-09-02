@@ -15,7 +15,8 @@ content/posts/    the blog: YYYY-MM-DD-slug.md (date in name, title in the H1)
 build.mjs         marked + a renderer that re-emits the syntax as dimmed spans
 style.css         the look (light + dark, pure CSS, no JS on pages)
 dist/             generated: one .html + one raw .md per page, plus the
-                  /posts index, feed.xml (atom) and feed.md (agent digest)
+                  /posts index (titles + ledes), feed.xml (atom) and
+                  feed.md (agent digest)
 .githooks/        post-commit hook that rebuilds dist/
 ```
 
@@ -30,8 +31,9 @@ git config core.hooksPath .githooks   # one-time, enables the hook
 
 - add a page: `content/foo.md` → commit → `/foo` (and raw `/foo.md`)
 - add a post: `content/posts/YYYY-MM-DD-slug.md` → commit → the page
-  `/posts/YYYY-MM-DD-slug`, listed at `/posts`, in `feed.xml` (atom) and
-  `feed.md` (plain-markdown digest for agents)
+  `/posts/YYYY-MM-DD-slug`, listed at `/posts` under a short lede (first
+  two sentences, `…` if cut), and in `feed.xml` (atom — the lede is the
+  entry's `<summary>`) and `feed.md` (plain-markdown digest for agents)
 - the footer of every page links its raw source; every feed entry links
   the rendered page AND its raw markdown
 

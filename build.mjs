@@ -89,6 +89,31 @@ const plain = (s) => s
   .replaceAll(/[*_`~#]/g, '')
   .trim();
 
+// plain text of marked inline tokens: keeps link text and codespan contents, drops the markers
+const inlinePlain = (tokens) => tokens.map((t) => {
+  if (t.tokens) return inlinePlain(t.tokens); // strong/em/del/link, or text with nested inline
+  if (t.type === 'text' || t.type === 'codespan') return t.text;
+  if (t.type === 'br') return ' ';
+  return '';
+}).join('');
+
+// keep generated digest markdown from re-parsing syntax inside a lede ("[t](u)" must stay literal)
+const mdNoLinks = (s) => s.replaceAll('[', '\\[').replaceAll(']', '\\]');
+
+// lede: first paragraph → up to N sentences, soft-capped at ~chars, "…" if cut
+const ledeOf = (text, maxSentences = 2, maxChars = 200) => {
+  const s = String(text).replace(/\s+/g, ' ').trim();
+  if (!s) return '';
+  const sents = s.split(/(?<=[.!?])\s+/);
+  let out = '';
+  for (let i = 0; i < sents.length && i < maxSentences; i++) {
+    const cand = out ? out + ' ' + sents[i] : sents[i];
+    if (out && cand.length > maxChars) break;
+    out = cand;
+  }
+  return out.length < s.length ? out + '…' : out;
+};
+
 const FAVICON = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='0.9em' font-size='90' font-family='monospace' fill='%238a8a82'%3E%23%3C/text%3E%3C/svg%3E";
 
 function pageTemplate({ outName, mdName, rawHref, title, nav, html, extraFooter = '' }) {
@@ -140,11 +165,18 @@ function build() {
       .filter((f) => /^\d{4}-\d{2}-\d{2}-.+\.md$/.test(f))
       .map((f) => {
         const src = readFileSync(join(POSTS, f), 'utf8');
-        let t = null;
+        let t = null, ledeTok = null;
         marked.walkTokens(marked.lexer(src), (tok) => {
           if (!t && tok.type === 'heading') t = tok.text;
+          if (!ledeTok && tok.type === 'paragraph') ledeTok = tok;
         });
-        return { file: f, date: f.slice(0, 10), src, title: t ? plain(t) : f.replace(/\.md$/, '') };
+        return {
+          file: f,
+          date: f.slice(0, 10),
+          src,
+          title: t ? plain(t) : f.replace(/\.md$/, ''),
+          lede: ledeTok ? ledeOf(inlinePlain(ledeTok.tokens)) : '',
+        };
       })
       .sort((a, b) => b.file.localeCompare(a.file)) // newest first
     : [];
@@ -193,12 +225,16 @@ function build() {
     writeFileSync(join(DIST, 'posts', p.file), p.src);
   }
 
-  // /posts index for humans and /feed.md — the same markdown — for agents
-  const lines = posts.length
-    ? posts.map((p) =>
-        `- ${p.date} · [${p.title}](/posts/${p.file.replace(/\.md$/, '')}) ([raw](/posts/${p.file}))`)
+  // /posts index for humans and /feed.md — the same markdown — for agents.
+  // each entry: linked title (date + raw) over a short lede
+  const blocks = posts.length
+    ? posts.map((p) => {
+        const clean = p.file.replace(/\.md$/, '');
+        const lede = p.lede ? `\n\n${mdNoLinks(p.lede)}` : '';
+        return `### [${mdNoLinks(p.title)}](/posts/${clean}) — ${p.date} · [raw](/posts/${p.file})${lede}`;
+      })
     : ['_no posts yet_'];
-  const digestMd = `# posts\n\n${lines.join('\n')}\n`;
+  const digestMd = `# posts\n\n${blocks.join('\n\n')}\n`;
   writeFileSync(join(DIST, 'feed.md'), digestMd);
   writeFileSync(join(DIST, 'posts.html'), pageTemplate({
     outName: 'posts.html',
@@ -221,7 +257,8 @@ function build() {
     <published>${ts}</published>
     <link rel="alternate" type="text/html" href="${BASE}/posts/${clean}"/>
     <link rel="alternate" type="text/markdown" href="${BASE}/posts/${p.file}"/>
-    <content type="html">${esc(marked.parse(p.src))}</content>
+${p.lede ? `    <summary>${esc(p.lede)}</summary>
+` : ''}    <content type="html">${esc(marked.parse(p.src))}</content>
   </entry>`;
   }).join('\n');
   writeFileSync(join(DIST, 'feed.xml'), `<?xml version="1.0" encoding="utf-8"?>
