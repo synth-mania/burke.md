@@ -60,4 +60,4 @@ build(content, dist);
 
 ---
 
-*the person behind the domain: [about](/about)*
+*the person behind the domain: [about](/about) · the [posts](/posts) · [feed](/feed.xml)*
