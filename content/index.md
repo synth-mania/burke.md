@@ -60,4 +60,4 @@ build(content, dist);
 
 ---
 
-*the person behind the domain: [about](/about.html)*
+*the person behind the domain: [about](/about)*

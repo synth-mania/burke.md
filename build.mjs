@@ -103,7 +103,7 @@ function pageTemplate({ outName, mdName, title, nav, html }) {
 </head>
 <body>
 <header>
-  <a class="brand" href="/index.html">burke.md</a>
+  <a class="brand" href="/">burke.md</a>
   <nav>${nav}</nav>
 </header>
 <main>
@@ -112,7 +112,7 @@ ${html}
 <footer>
   <a class="raw" href="/${mdName}">[ raw ]</a>
   <span class="sep">·</span>
-  <a href="/index.html">[ index ]</a>
+  <a href="/">[ index ]</a>
 </footer>
 </body>
 </html>
@@ -131,13 +131,22 @@ function build() {
     outName: f.replace(/\.md$/, '') === 'index' ? 'index.html' : f.replace(/\.md$/, '') + '.html',
   }));
 
+  // Cloudflare Pages serves about.html at /about, so links are extensionless
   const nav = pages
+    .filter((p) => p.slug !== '404')
     .map((p) => {
       const active = p.slug === 'index' ? ' class="on"' : '';
       const label = p.slug === 'index' ? 'home' : p.slug;
-      return `<a href="/${p.outName}"${active}>${label}</a>`;
+      const href = p.slug === 'index' ? '/' : `/${p.slug}`;
+      return `<a href="${href}"${active}>${label}</a>`;
     })
     .join(' ');
+
+  // tell the host to serve raw sources with the proper IANA type (RFC 7763)
+  const headers = files
+    .map((f) => `/${f}\n  Content-Type: text/markdown; charset=utf-8\n`)
+    .join('\n');
+  writeFileSync(join(DIST, '_headers'), headers);
 
   for (const p of pages) {
     const src = readFileSync(p.file, 'utf8');
