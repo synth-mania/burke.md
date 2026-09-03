@@ -41,7 +41,7 @@ My inference provider is LM Studio, which doesn't have the bleeding edge of opti
 
 Harnessing the intelligence of this model for me is [pi-agent](https://pi.dev/). It's a minimalist project, the whole MO is that it comes with a small feature set, but is easy to extend. I like that freedom. For me, it's been configured with plugins to access web search, my self hosted calendar and task tracker, my grocery list, and with limited access to my email. For me, this means **I have finally reached the point where I don't feel any pressure to use cloud models**, and I'm shocked that I can say that in 2026.
 
-[pi-web](https://pi-web.dev/) is a community maintained webui that I use on top of pi-agent. It enables access to one pi-agent install in the homelab, from any device on my network. [Tailscale](https://tailscale.com) extends my home network securely over the internet, letting me take pi-agent with my everywhere on my phone and laptop.
+[pi-web](https://pi-web.dev/) is a community maintained webui that I use on top of pi-agent. It enables access to one pi-agent install in the homelab, from any device on my network. [tailscale](https://tailscale.com) extends my home network securely over the internet, letting me take pi-agent with my everywhere on my phone and laptop.
 
 Text me with plans? I'll screenshot that and send it to pi-agent. It'll be added to my calendar with no extra effort. One of my whitelisted contacts emails word of an event on campus? Before I even check my university inbox, I'll see it on my calendar.
 
