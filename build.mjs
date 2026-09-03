@@ -264,7 +264,6 @@ ${p.lede ? `    <summary>${esc(p.lede)}</summary>
 <feed xmlns="http://www.w3.org/2005/Atom">
   <id>${BASE}/feed.xml</id>
   <title>burke.md</title>
-  <subtitle>markdown, left visible</subtitle>
   <updated>${posts.length ? `${posts[0].date}T00:00:00Z` : new Date().toISOString()}</updated>
   <author><name>burke</name></author>
   <link rel="alternate" type="text/html" href="${BASE}/posts"/>
