@@ -160,6 +160,18 @@ function build() {
 
   // posts: content/posts/YYYY-MM-DD-slug.md (date in the filename, title in the H1)
   const POSTS = join(CONTENT, 'posts');
+  // an undated .md would be silently dropped by the filter below — and web-UI
+  // commits or clones without core.hooksPath set can commit exactly that.
+  // fail the build loudly instead.
+  if (existsSync(POSTS)) {
+    for (const f of readdirSync(POSTS)) {
+      if (f.endsWith('.md') && !/^\d{4}-\d{2}-\d{2}-.+\.md$/.test(f)) {
+        console.error(`✗ ${join(POSTS, f)}: post files must be named YYYY-MM-DD-slug.md`);
+        console.error(`  rename it (e.g. 2026-09-03-${f}), or commit from a clone where "git config core.hooksPath .githooks" has been run — the pre-commit hook stamps the date.`);
+        process.exit(1);
+      }
+    }
+  }
   const posts = existsSync(POSTS)
     ? readdirSync(POSTS)
       .filter((f) => /^\d{4}-\d{2}-\d{2}-.+\.md$/.test(f))

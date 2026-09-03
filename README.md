@@ -37,6 +37,11 @@ git config core.hooksPath .githooks   # one-time, enables the hooks
   `/posts` under a short lede (first two sentences, `…` if cut), and in
   `feed.xml` (atom — the lede is the entry's `<summary>`) and `feed.md`
   (plain-markdown digest for agents)
+- the hook is per-clone config (`core.hooksPath` is git config, not part of
+  the repo): any clone that hasn't run `git config core.hooksPath .githooks`
+  — and any web-UI commit — commits files *as named*. That's why `build.mjs`
+  **fails the build** on an undated `content/posts/*.md` instead of silently
+  dropping it — the deploy fails loudly, with the expected name
 - the footer of every page links its raw source; every feed entry links
   the rendered page AND its raw markdown
 
