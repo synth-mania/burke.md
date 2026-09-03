@@ -1,66 +1,11 @@
-# burke.md
+# index
 
-This site is written in [markdown](https://daringfireball.net/projects/markdown/) and it shows it.
-The `#`, the `**`, the `-` you are reading are not decoration — they are the source.
-Every page is a plain `.md` file, compiled at commit time into HTML with the
-syntax left in place: the markup is styled, but never hidden.
+My name is Burke, and this is my site.
 
-## links
+I'm a huge geek, and enjoy picking up new hobbies. My most recent fascination is disc golf, but I also have broad interests in AI, computer science, DIY and home-labbing, bikes and cars, and clean energy. I'm also an avid electric unicyclist!
 
-- [about](/about) — the person behind the domain, and the principles
-- [posts](/posts) — the blog, newest first
-- [feed](/feed.xml) — the atom feed · [feed.md](/feed.md) — the same thing, for agents
-- [this page's source](/index.md) — every page has a raw twin, linked from its footer
+Currently, I'm an undergrad student at Dakota State University, pursuing majors in AI, Computer Science, and Math.
 
-## how it works
+Occassionally, I'll post thoughts here. If you like reading what I write, this site serves (an rss feed)[https://burke.md/feed.xml].
 
-- write a page in `content/`
-- commit it
-- a post-commit hook compiles it with [marked](https://marked.js.org) and a renderer that re-emits the syntax as dimmed spans
-- the rendered page and the raw file live side by side
-
-## the elements
-
-### headings
-
-#### get smaller as they go
-
-##### all the way down
-
-###### to h6
-
-### emphasis
-
-**bold** keeps its asterisks, *italic* keeps its single ones, ~~struck~~ keeps its tildes,
-and `inline code` keeps its backticks.
-
-### links
-
-[the commonmark spec](https://spec.commonmark.org/) — the brackets and the URL are part of the page,
-the text is the only part that's clickable.
-
-### lists
-
-1. write
-2. commit
-3. done
-
-nested too:
-
-- outer item
-  - inner item
-  - another inner item
-
-### quotes
-
-> Markdown is intended to be as easy to read and easy to write as is feasible.
->
-> Readability should be emphasized above all else.
-> — [John Gruber](https://daringfireball.net/)
-
-### code
-
-```js
-// markdown in, markdown-styled HTML out
-build(content, dist);
-```
+New posts can also be accessed here from the (posts)[https://burke.md/posts] page.
