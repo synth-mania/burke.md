@@ -181,12 +181,11 @@ function build() {
       .sort((a, b) => b.file.localeCompare(a.file)) // newest first
     : [];
 
-  // Cloudflare serves about.html at /about, so links are extensionless
+  // the nav is deliberately just two tabs: index + posts. anything else
+  // perennially relevant is linked from the index (it is the MOC).
+  // Cloudflare serves about.html at /about, so links are extensionless.
   const navItems = [
-    { label: 'home', href: '/', slug: 'index' },
-    ...pages
-      .filter((p) => p.slug !== 'index' && p.slug !== '404')
-      .map((p) => ({ label: p.slug, href: `/${p.slug}`, slug: p.slug })),
+    { label: 'index', href: '/', slug: 'index' },
     { label: 'posts', href: '/posts', slug: 'posts' },
   ];
   const makeNav = (active) => navItems

@@ -5,12 +5,19 @@ The `#`, the `**`, the `-` you are reading are not decoration — they are the s
 Every page is a plain `.md` file, compiled at commit time into HTML with the
 syntax left in place: the markup is styled, but never hidden.
 
+## links
+
+- [about](/about) — the person behind the domain, and the principles
+- [posts](/posts) — the blog, newest first
+- [feed](/feed.xml) — the atom feed · [feed.md](/feed.md) — the same thing, for agents
+- [this page's source](/index.md) — every page has a raw twin, linked from its footer
+
 ## how it works
 
 - write a page in `content/`
 - commit it
 - a post-commit hook compiles it with [marked](https://marked.js.org) and a renderer that re-emits the syntax as dimmed spans
-- the rendered page and the raw file live side by side: [view this page's source](/index.md)
+- the rendered page and the raw file live side by side
 
 ## the elements
 
@@ -57,7 +64,3 @@ nested too:
 // markdown in, markdown-styled HTML out
 build(content, dist);
 ```
-
----
-
-*the person behind the domain: [about](/about) · the [posts](/posts) · [feed](/feed.xml)*
