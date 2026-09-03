@@ -1,0 +1,65 @@
+#!/bin/sh
+# pre-commit: date-stamp blog posts.
+#
+# Newly added (or renamed) .md files in content/posts/ get a YYYY-MM-DD-
+# prefix in the committed name:
+#   - undated name              -> today's date (the publish moment)
+#   - renamed from a dated name -> the original date is preserved
+#   - already dated             -> must be a real calendar date, otherwise
+#                                  the commit is rejected
+set -u
+
+fail=0
+
+# print the leading YYYY-MM-DD of a filename, if it has one (first three fields)
+date_prefix() {
+  case $1 in
+    [0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]-*)
+      f=${1%%-*}; r=${1#*-}; g=${r%%-*}; h=${r#*-}
+      printf '%s-%s-%s' "$f" "$g" "${h%%-*}"
+      ;;
+  esac
+}
+
+is_real_date() { date -d "$1" >/dev/null 2>&1; }
+
+# move $1 (worktree path in content/posts/) to <date>-$base
+stamp() {
+  base=${1##*/}
+  target="content/posts/$2-$base"
+  if [ -e "$target" ]; then
+    echo "pre-commit: $base would become $target, which already exists — pick another name" >&2
+    return 1
+  fi
+  git mv "$1" "$target" && echo "pre-commit: $1 → $target"
+}
+
+# --- new files -----------------------------------------------------------
+for f in $(git diff --cached --name-only --diff-filter=A -- content/posts/); do
+  case $f in *.md) ;; *) continue ;; esac
+  d=$(date_prefix "${f##*/}")
+  if [ -n "$d" ]; then
+    if is_real_date "$d"; then
+      : # manually dated, and it's a real date — fine
+    else
+      echo "pre-commit: $f has an impossible date ($d) — fix the filename" >&2
+      fail=1
+    fi
+  else
+    stamp "$f" "$(date +%F)" || fail=1
+  fi
+done
+
+# --- renames: preserve the original date ---------------------------------
+renames=$(git diff --cached --name-status --diff-filter=R -- content/posts/)
+if [ -n "$renames" ]; then
+  printf '%s\n' "$renames" | while IFS="$(printf '\t')" read -r _sim old new; do
+    case $new in *.md) ;; *) continue ;; esac
+    [ -n "$(date_prefix "${new##*/}")" ] && continue # already dated
+    d=$(date_prefix "${old##*/}")
+    [ -z "$d" ] && d=$(date +%F)
+    stamp "$new" "$d" || exit 1
+  done || fail=1
+fi
+
+[ "$fail" -eq 0 ] || exit 1
