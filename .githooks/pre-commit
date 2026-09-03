@@ -1,8 +1,8 @@
 #!/bin/sh
 # pre-commit: date-stamp blog posts.
 #
-# Newly added (or renamed) .md files in content/posts/ get a YYYY-MM-DD-
-# prefix in the committed name:
+# Newly added or modified (or renamed) .md files in content/posts/ get a
+# YYYY-MM-DD- prefix in the committed name:
 #   - undated name              -> today's date (the publish moment)
 #   - renamed from a dated name -> the original date is preserved
 #   - already dated             -> must be a real calendar date, otherwise
@@ -34,8 +34,8 @@ stamp() {
   git mv "$1" "$target" && echo "pre-commit: $1 → $target"
 }
 
-# --- new files -----------------------------------------------------------
-for f in $(git diff --cached --name-only --diff-filter=A -- content/posts/); do
+# --- new or modified files -----------------------------------------------
+for f in $(git diff --cached --name-only --diff-filter=AM -- content/posts/); do
   case $f in *.md) ;; *) continue ;; esac
   d=$(date_prefix "${f##*/}")
   if [ -n "$d" ]; then
