@@ -291,11 +291,13 @@ ${entries}
     ...posts.map((p) => `/posts/${p.file}`),
   ].map((f) => `${f}\n  Content-Type: text/markdown; charset=utf-8\n`).join('\n')
     + `\n/feed.xml\n  Content-Type: application/atom+xml; charset=utf-8\n`
-    + `\n/gpg.asc\n  Content-Type: application/pgp-keys\n`;
+    + `\n/gpg.asc\n  Content-Type: application/pgp-keys\n`
+    + `\n/binding.txt.asc\n  Content-Type: text/plain; charset=utf-8\n`;
   writeFileSync(join(DIST, '_headers'), headers);
 
   writeFileSync(join(DIST, 'style.css'), readFileSync('style.css', 'utf8'));
   writeFileSync(join(DIST, 'gpg.asc'), readFileSync('gpg.asc', 'utf8'));
+  writeFileSync(join(DIST, 'binding.txt.asc'), readFileSync('binding.txt.asc', 'utf8'));
   console.log(`built ${pages.length} page(s) + ${posts.length} post(s) + feed → dist/`);
 }
 
