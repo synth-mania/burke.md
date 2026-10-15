@@ -13,7 +13,7 @@ After downloading and importing my GPG public key, your GPG client will be able 
 
 - **fingerprint:** `F883 57E6 08CC 0BAB 7497 4AC2 0429 0A70 49DC 7EC7`
 - **email:** `b@burke.md`
-- **key:** ed25519 (sign) + cv25519 (encrypt), expires 2028-10-13
+- **key:** ed25519 master [SC], cv25519 [E] encryption, ed25519 [S] signing — expires 2028-10-13
 - **public key:** [gpg.asc](/gpg.asc) — `gpg --import gpg.asc`
 
 ## sending me something private
