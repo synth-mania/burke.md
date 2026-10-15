@@ -9,3 +9,5 @@ Currently, I'm an undergrad student at Dakota State University, pursuing majors 
 Occasionally, I'll post thoughts here. If you like reading what I write, this site serves [an rss feed](/feed.xml).
 
 New posts can also be accessed here from the [posts](/posts) page.
+
+If you want to send me something private, or verify something is really from me, here's my [GPG key](/gpg).
